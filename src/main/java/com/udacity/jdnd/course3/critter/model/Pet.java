@@ -1,6 +1,7 @@
 package com.udacity.jdnd.course3.critter.model;
 
 import com.udacity.jdnd.course3.critter.pet.PetType;
+import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,11 +16,12 @@ public class Pet {
     @Enumerated(EnumType.STRING)
     private PetType type;
 
+    @Nationalized
     private String name;
     private LocalDate birthDate;
 
     @Column(length = 500)
-    private String notes;
+    private String note;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Customer owner;
@@ -27,12 +29,12 @@ public class Pet {
     public Pet() {
     }
 
-    public Pet(long id, PetType type, String name, LocalDate birthDate, String notes, Customer owner) {
+    public Pet(long id, PetType type, String name, LocalDate birthDate, String note, Customer owner) {
         this.id = id;
         this.type = type;
         this.name = name;
         this.birthDate = birthDate;
-        this.notes = notes;
+        this.note = note;
         this.owner = owner;
     }
 
@@ -68,12 +70,12 @@ public class Pet {
         this.birthDate = birthDate;
     }
 
-    public String getNotes() {
-        return notes;
+    public String getNote() {
+        return note;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public Customer getOwner() {

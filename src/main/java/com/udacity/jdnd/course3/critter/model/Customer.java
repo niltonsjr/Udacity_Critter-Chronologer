@@ -13,7 +13,7 @@ public class Customer {
     private String phoneNumber;
 
     @Column(length = 500)
-    private String notes;
+    private String note;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Pet> pets = new ArrayList<>();
@@ -21,11 +21,11 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(long id, String name, String phoneNumber, String notes, List<Pet> pets) {
+    public Customer(long id, String name, String phoneNumber, String note, List<Pet> pets) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.notes = notes;
+        this.note = note;
         this.pets = pets;
     }
 
@@ -53,12 +53,12 @@ public class Customer {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getNotes() {
-        return notes;
+    public String getNote() {
+        return note;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public List<Pet> getPets() {
