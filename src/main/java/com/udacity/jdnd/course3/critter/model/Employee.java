@@ -16,10 +16,10 @@ public class Employee {
 
     private String name;
 
-    @ElementCollection
+    @ElementCollection(targetClass = EmployeeSkill.class)
     private Set<EmployeeSkill> skills = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(targetClass = DayOfWeek.class)
     private Set<DayOfWeek> daysAvailable = new HashSet<>();
 
     public Employee() {
