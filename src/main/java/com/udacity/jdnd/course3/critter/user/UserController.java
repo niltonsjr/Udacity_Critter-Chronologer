@@ -1,8 +1,10 @@
 package com.udacity.jdnd.course3.critter.user;
 
 import com.udacity.jdnd.course3.critter.model.Customer;
+import com.udacity.jdnd.course3.critter.model.Employee;
 import com.udacity.jdnd.course3.critter.model.Pet;
 import com.udacity.jdnd.course3.critter.services.CustomerService;
+import com.udacity.jdnd.course3.critter.services.EmployeeService;
 import com.udacity.jdnd.course3.critter.services.PetService;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.BeanUtils;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,13 +31,16 @@ public class UserController {
     CustomerService customerService;
 
     @Autowired
+    EmployeeService employeeService;
+
+    @Autowired
     PetService petService;
 
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO){
         Customer customer = new Customer();
         customer = convertCustomerDTOToCustomer(customerDTO);
-        customerService.save(customer);
+        customer = customerService.save(customer);
         return convertCustomerToCustomerDTO(customer);
     }
 
@@ -53,35 +59,46 @@ public class UserController {
 
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+        Employee employee = new Employee();
+        employee = convertEmployeeDTOToEmployee(employeeDTO);
+        employee = employeeService.save(employee);
+        return convertEmployeeToEmployeeDTO(employee);
     }
 
-    @PostMapping("/employee/{employeeId}")
+    @GetMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        Employee employee = employeeService.findById(employeeId);
+        return convertEmployeeToEmployeeDTO(employee);
     }
 
     @PutMapping("/employee/{employeeId}")
     public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        employeeService.setAvailability(daysAvailable, employeeId);
     }
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+        Set<EmployeeSkill> skills = employeeDTO.getSkills();
+        Set<DayOfWeek> daysAvailable = new HashSet<>();
+        daysAvailable.add(employeeDTO.getDate().getDayOfWeek());
+        List<Employee> employeeList = employeeService.findEmployeesForService(employeeDTO.getSkills(), daysAvailable);
+        return convertEmployeeListToEmployeeDTOList(employeeList);
     }
 
     private Customer convertCustomerDTOToCustomer(CustomerDTO customerDTO) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDTO, customer);
-        List<Pet> petList = customerDTO.getPetIds().stream().map(id -> petService.findById(id)).collect(Collectors.toList());
-        customer.setPets(petList);
+        if(customerDTO.getPetIds() != null) {
+            List<Pet> petList = customerDTO.getPetIds().stream().map(id -> petService.findById(id)).collect(Collectors.toList());
+            customer.setPets(petList);
+        }
         return customer;
     }
 
     private CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
         CustomerDTO customerDTO = new CustomerDTO();
         BeanUtils.copyProperties(customer, customerDTO);
+
         List<Long> idsList = customer.getPets().stream().map(pet -> pet.getId()).collect(Collectors.toList());
         customerDTO.setPetIds(idsList);
         return customerDTO;
@@ -89,5 +106,21 @@ public class UserController {
 
     private List<CustomerDTO> convertCustomerListToCustomerDTOList(List<Customer> customerList) {
         return customerList.stream().map(customer -> convertCustomerToCustomerDTO(customer)).collect(Collectors.toList());
+    }
+
+    private EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
+        EmployeeDTO employeeDTO = new EmployeeDTO();
+        BeanUtils.copyProperties(employee, employeeDTO);
+        return employeeDTO;
+    }
+
+    private Employee convertEmployeeDTOToEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        return employee;
+    }
+
+    private List<EmployeeDTO> convertEmployeeListToEmployeeDTOList(List<Employee> employeeList) {
+        return employeeList.stream().map(employee -> convertEmployeeToEmployeeDTO(employee)).collect(Collectors.toList());
     }
 }
