@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -36,7 +38,9 @@ public class EmployeeService {
         employee.setDaysAvailable(daysAvailable);
     }
 
-    public List<Employee> findEmployeesForService(Set<EmployeeSkill> skills, Set<DayOfWeek> daysAvailable) {
-        return employeeRepository.findAllBySkillsInAndDaysAvailableIn(skills, daysAvailable);
+    public Set<Employee> findAvailableEmployees(Set<EmployeeSkill> skills, LocalDate dayAvailable) {
+        Set<Employee> availableEmployees = employeeRepository.findAllByDaysAvailable(dayAvailable.getDayOfWeek());
+        Set<Employee> availableEmployeesWithSkills = availableEmployees.stream().filter(employee -> employee.getSkills().containsAll(skills)).collect(Collectors.toSet());
+        return availableEmployeesWithSkills;
     }
 }

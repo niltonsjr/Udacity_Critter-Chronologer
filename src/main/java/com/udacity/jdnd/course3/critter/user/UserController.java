@@ -6,13 +6,13 @@ import com.udacity.jdnd.course3.critter.model.Pet;
 import com.udacity.jdnd.course3.critter.services.CustomerService;
 import com.udacity.jdnd.course3.critter.services.EmployeeService;
 import com.udacity.jdnd.course3.critter.services.PetService;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
-import java.util.HashSet;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -79,9 +79,8 @@ public class UserController {
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
         Set<EmployeeSkill> skills = employeeDTO.getSkills();
-        Set<DayOfWeek> daysAvailable = new HashSet<>();
-        daysAvailable.add(employeeDTO.getDate().getDayOfWeek());
-        List<Employee> employeeList = employeeService.findEmployeesForService(employeeDTO.getSkills(), daysAvailable);
+        LocalDate daysAvailable = employeeDTO.getDate();
+        List<Employee> employeeList = new ArrayList<>(employeeService.findAvailableEmployees(employeeDTO.getSkills(), daysAvailable));
         return convertEmployeeListToEmployeeDTOList(employeeList);
     }
 
