@@ -38,8 +38,7 @@ public class UserController {
 
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO){
-        Customer customer = new Customer();
-        customer = convertCustomerDTOToCustomer(customerDTO);
+        Customer customer = convertCustomerDTOToCustomer(customerDTO);
         customer = customerService.save(customer);
         return convertCustomerToCustomerDTO(customer);
     }
@@ -97,7 +96,6 @@ public class UserController {
     private CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
         CustomerDTO customerDTO = new CustomerDTO();
         BeanUtils.copyProperties(customer, customerDTO);
-
         List<Long> idsList = customer.getPets().stream().map(pet -> pet.getId()).collect(Collectors.toList());
         customerDTO.setPetIds(idsList);
         return customerDTO;

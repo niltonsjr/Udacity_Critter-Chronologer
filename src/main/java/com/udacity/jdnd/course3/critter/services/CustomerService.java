@@ -27,6 +27,6 @@ public class CustomerService {
 
     public Customer findById(Long id) {
         Optional<Customer> obj = customerRepository.findById(id);
-        return obj.orElseThrow(() -> new ResourceNotFoundException("Customer with ID " +id+ " not found."));
+        return obj.orElseThrow(() -> new ResourceNotFoundException("Customer with ID " + id + " not found."));
     }
 }

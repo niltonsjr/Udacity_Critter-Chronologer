@@ -6,12 +6,10 @@ import com.udacity.jdnd.course3.critter.services.exceptions.ResourceNotFoundExce
 import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,12 +27,12 @@ public class EmployeeService {
 
     public Employee findById(Long id) {
         Optional<Employee> obj = employeeRepository.findById(id);
-        return obj.orElseThrow(() -> new ResourceNotFoundException("Employee with ID " +id+ " not found."));
+        return obj.orElseThrow(() -> new ResourceNotFoundException("Employee with ID " + id + " not found."));
     }
 
-    public void setAvailability(Set<DayOfWeek> daysAvailable,long employeeId) {
+    public void setAvailability(Set<DayOfWeek> daysAvailable, long employeeId) {
         Optional<Employee> obj = employeeRepository.findById(employeeId);
-        Employee employee = obj.orElseThrow(() -> new ResourceNotFoundException("Employee with ID " +employeeId+ " not found."));
+        Employee employee = obj.orElseThrow(() -> new ResourceNotFoundException("Employee with ID " + employeeId + " not found."));
         employee.setDaysAvailable(daysAvailable);
     }
 
